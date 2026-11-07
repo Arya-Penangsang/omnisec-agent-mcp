@@ -65,9 +65,10 @@ python bridge/skills_bridge.py pack
 
 ---
 
-## 🙏 Atribusi & Sumber Orisinal
+## 🙏 Atribusi, Sumber Orisinal & Catatan Modifikasi
 
-* **[claude-skill-cave](https://github.com/asauntung/claude-skill-cave)**: Terima kasih dan apresiasi sebesar-besarnya kepada **[@asauntung](https://github.com/asauntung)** atas kreasi skill orisinal *Caveman mode* untuk Claude. OmniSec mengadaptasi dan memperluas konsep tersebut menjadi mesin penghemat token universal lintas-model.
+* **[claude-skill-cave](https://github.com/asauntung/claude-skill-cave)**: Terima kasih dan apresiasi sebesar-besarnya kepada **[@asauntung](https://github.com/asauntung)** atas kreasi skill orisinal *Caveman mode* untuk Claude.  
+  * **Modifikasi untuk OmniSec:** OmniSec mengadaptasi dan memperluas konsep tersebut menjadi mesin penghemat token universal lintas-model (*Omni*). Modifikasi mencakup refaktorisasi prompt agnostik (mendukung GPT-4o, Gemini, DeepSeek), penambahan batasan negatif universal (*anti-basa-basi*), kendali densitas MCP terprogram (`lite`/`full`/`ultra`), serta integrasi jembatan multi-platform via OmniSec Bridge.
 * **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/)**: Standar terbuka yang diinisiasi oleh Anthropic.
 * **MITRE ATT&CK for Enterprise**: Taksonomi dan definisi teknik simulasi ancaman.
 

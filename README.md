@@ -95,9 +95,10 @@ python bridge/skills_bridge.py pack
 
 ---
 
-## 🙏 Attribution & Acknowledgments
+## 🙏 Attribution, Source & Modification Notice
 
-* **[claude-skill-cave](https://github.com/asauntung/claude-skill-cave)**: Special thanks to **[@asauntung](https://github.com/asauntung)** for creating the original Caveman mode skill for Claude. OmniSec adapts and expands this concept into a universal, multi-model token-saving engine.
+* **[claude-skill-cave](https://github.com/asauntung/claude-skill-cave)**: Special thanks and full credit to **[@asauntung](https://github.com/asauntung)** for creating the original Caveman mode skill for Claude.  
+  * **Modification for OmniSec:** OmniSec adapts and expands this concept into a universal, multi-model ("Omni") token-saving engine. Modifications include model-agnostic prompt refactoring (supporting GPT-4o, Gemini, DeepSeek), universal negative constraints against model sycophancy, programmatic MCP density switches (`lite`/`full`/`ultra`), and multi-platform packaging via the OmniSec Bridge.
 * **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/)**: Open standard initiated by Anthropic.
 * **MITRE ATT&CK for Enterprise**: Threat emulation taxonomy and technique definitions.
 

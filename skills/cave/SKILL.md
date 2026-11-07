@@ -9,9 +9,15 @@ description: >-
 
 # 🪨 Universal Cave (Caveman Mode)
 
-> **Attribution & Source Notice:**  
-> This skill is an enhanced, universal model-agnostic adaptation of **[claude-skill-cave](https://github.com/asauntung/claude-skill-cave)** created by **[@asauntung](https://github.com/asauntung)** under the MIT License.  
-> Adapted in OmniSec to support cross-model interoperability (Claude, GPT-4o, Gemini, Cursor, Antigravity, and DeepSeek).
+> [!NOTE]
+> **Source Attribution & Modification Notice:**  
+> This skill is derived and adapted from **[claude-skill-cave](https://github.com/asauntung/claude-skill-cave)** by **[@asauntung](https://github.com/asauntung)** (MIT License).  
+> **Status: MODIFIED FOR OMNI (OmniSec Multi-Model & Cross-Platform)**  
+> **Modifications made:**
+> 1. Removed Claude-exclusive terminology (`Claude Code`, `Cowork`) to make the prompt fully model-agnostic.
+> 2. Added universal negative constraints to suppress sycophancy & verbosity in GPT-4o, Gemini, and local LLMs.
+> 3. Integrated into the OmniSec Multi-MCP server with programmatic density controls (`lite`, `full`, `ultra`).
+> 4. Connected with the OmniSec Universal Bridge for automatic distribution across Claude, Antigravity, Cursor, and ChatGPT.
 
 ---
 

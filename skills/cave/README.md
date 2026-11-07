@@ -2,13 +2,21 @@
 
 Universal token-saving skill for AI models (Claude, GPT, Gemini, Llama, DeepSeek) across Antigravity, Claude Desktop, Cursor, Windsurf, and ChatGPT.
 
-## 📖 Attribution & Credit
-This skill is an agnostically enhanced adaptation of:
-- **Project:** [claude-skill-cave](https://github.com/asauntung/claude-skill-cave)
-- **Author:** [@asauntung](https://github.com/asauntung)
+## 📖 Source Attribution & Modification Notice
+
+This skill is derived and adapted from:
+- **Original Project:** [claude-skill-cave](https://github.com/asauntung/claude-skill-cave)
+- **Original Author:** [@asauntung](https://github.com/asauntung)
 - **License:** MIT License
 
-Original premise:
+### 🔄 What was Modified for OmniSec (Omni Multi-Model Architecture)?
+The original `claude-skill-cave` was crafted specifically for Anthropic's Claude. In OmniSec, it has been modified and expanded for universal multi-model ("Omni") deployment:
+1. **Model-Agnostic Prompt Engineering:** Removed Claude-specific references so it works with zero friction on GPT-4o, Gemini, DeepSeek, and local LLMs.
+2. **Universal Negative Constraints:** Added strict guardrails to suppress verbosity in sycophantic models like GPT-4o and conversational Gemini.
+3. **MCP Tool & Resource Integration:** Transformed into an interactive MCP tool (`set_cave_mode`) and MCP Resource (`resource://skills/cave`) inside the OmniSec MCP Server.
+4. **Automated Cross-Platform Bridge:** Supported by `bridge/skills_bridge.py` for automated one-click packaging to Claude Web (`cave.zip`), Claude Code CLI, Google Antigravity, Cursor, and ChatGPT.
+
+Original premise by [@asauntung](https://github.com/asauntung):
 > *"Sebagian besar token output habis untuk hal yang tidak Anda butuhkan: banyak pengantar, sering mengulang pertanyaan, kalimat penutup yang menawarkan bantuan lanjutan, dan jargon-jargon. Skill ini memangkas semuanya dan menyisakan isi."*
 
 ---
