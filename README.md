@@ -1,112 +1,237 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="OmniSec Agent MCP Banner" width="100%">
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License"></a>
+  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-2024--11--05-7928CA.svg?style=for-the-badge&logo=anthropic&logoColor=white" alt="MCP Protocol"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Runtime-PHP%208.5%20%7C%20Python%203-0284C7.svg?style=for-the-badge&logo=python&logoColor=white" alt="Runtime"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Token%20Savings-Up%20to%2098.6%25-10B981.svg?style=for-the-badge" alt="Token Savings"></a>
+  <a href="https://github.com/Arya-Penangsang/omnisec-agent-mcp/stargazers"><img src="https://img.shields.io/github/stars/Arya-Penangsang/omnisec-agent-mcp?style=for-the-badge&color=gold" alt="GitHub Stars"></a>
+</p>
+
+<p align="center">
+  <b><a href="README.md">English</a></b> • <b><a href="README.id.md">Bahasa Indonesia</a></b>
+</p>
+
+---
+
 # 🛡️ OmniSec Agent MCP (`omnisec-agent-mcp`)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![MCP Standard](https://img.shields.io/badge/MCP-2024--11--05-purple.svg)](https://modelcontextprotocol.io/)
-[![Multi-Model](https://img.shields.io/badge/Models-Claude%20%7C%20GPT--4o%20%7C%20Gemini%20%7C%20DeepSeek-green.svg)](#)
+> **Universal Cybersecurity Model Context Protocol (MCP) Server & Token-Saving Agent Skills for Claude Desktop, Cursor, GPT-4o, and Google Antigravity.**
 
-> **Universal Cybersecurity Model Context Protocol (MCP) Server & Token-Efficient Agent Skills for Claude, GPT, Antigravity, and Cursor.**
+**OmniSec Agent MCP** bridges comprehensive cybersecurity assessment capabilities (**Purple Teaming WAF audits, MITRE ATT&CK threat emulation, static PE malware triage with Shannon entropy, and DFIR USBSTOR/Event Log forensics**) with a hyper-efficient **Token-Saving Engine (Universal Caveman Mode)**. 
 
-OmniSec bridges cybersecurity assessment tools (Purple Team WAF auditing, threat emulation, malware PE analysis, and DFIR forensics) with an aggressive **Token-Saving Engine (Universal Caveman Mode)**, ensuring your AI agents perform deep security triage without burning through conversation rate limits.
+It stops LLM context windows from overflowing and protects your rate limits—allowing autonomous coding and security agents to perform multi-step triage without burning thousands of tokens on unnecessary conversational filler.
 
 ---
 
-## ⚡ Key Highlights
+## 📑 Table of Contents
 
-1. **Dual Token-Saving Architecture:**
-   * **Backend/Tool Level:** Multi-MCP dense output formatter cuts input tokens by **80%–98%**.
-   * **Model/Prose Level:** Universal Caveman mode cuts output tokens by **60%–75%** by cutting filler words and pleasantries.
-2. **Model-Agnostic:** Runs seamlessly on **Claude 3.5/3.7**, **GPT-4o/o1**, **Gemini 2.0/Pro**, and local models (**Ollama / DeepSeek**).
-3. **Multi-Platform Bridge:** One-click sync to Claude Desktop, Claude Code, Antigravity, and Cursor.
-4. **Local & Remote Office Execution:** Audit web targets locally or tunnel through remote hosts via SSH.
+- [⚡ Why OmniSec Agent MCP?](#-why-omnisec-agent-mcp)
+- [📊 Token Conservation Benchmark](#-token-conservation-benchmark)
+- [🛠️ Native MCP Tools Specification](#️-native-mcp-tools-specification)
+- [💻 Dual-Runtime Architecture](#-dual-runtime-architecture)
+- [🚀 Multi-Client Quickstart](#-multi-client-quickstart)
+  - [1. Claude Desktop](#1-claude-desktop)
+  - [2. Cursor & Windsurf IDE](#2-cursor--windsurf-ide)
+  - [3. Google Antigravity](#3-google-antigravity)
+- [🧪 Live Verification & Real-World Demos](#-live-verification--real-world-demos)
+- [🗺️ Multi-Platform Sync Engine (Bridge CLI)](#️-multi-platform-sync-engine-bridge-cli)
+- [🙏 Attribution & Prior Art](#-attribution--prior-art)
+- [📄 License](#-license)
 
 ---
 
-## 🗺️ Architecture Overview
+## ⚡ Why OmniSec Agent MCP?
 
-```mermaid
-flowchart TD
-    subgraph SSOT["📁 OmniSec Core Hub"]
-        CAVE["🪨 Universal Cave Engine<br>(Token Optimizer)"]
-        SKILLS["🟣 Cyber Skills Runbooks<br>(Purple, Red, Blue, Forensics)"]
-        MCP["⚡ Multi-MCP Server v2.0<br>(server.php / Dense Formatter)"]
-    end
+Modern agentic coding workflows often suffer from two major token sinks:
+1. **Verbose LLM Politeness:** Models spend 50–150 tokens per turn generating greetings (*"Sure! I'd be happy to help with that..."*), echoing user requests, and conversational sign-offs (*"Let me know if you need anything else!"*).
+2. **Unfiltered Machine Payloads:** Security scanners typically return hundreds of lines of nested JSON trees (~1,200+ tokens) for a single endpoint scan.
 
-    BRIDGE["🌉 bridge/skills_bridge.py<br>(Universal CLI Syncer)"]
-    CAVE --> MCP
-    SKILLS --> MCP
-    MCP --> BRIDGE
-
-    subgraph CLIENTS["🖥️ Supported Platforms"]
-        C_DESK["🟠 Claude Desktop & Code"]
-        AGY["🟣 Google Antigravity"]
-        CUR["🟦 Cursor & Windsurf IDE"]
-        GPT["🟢 ChatGPT & Web LLMs"]
-    end
-
-    BRIDGE --> C_DESK
-    BRIDGE --> AGY
-    BRIDGE --> CUR
-    BRIDGE --> GPT
-```
+**OmniSec solves both problems at once:**
+- **At the Model Level:** Universal Caveman prompts enforce strict negative constraints (*no pleasantries, no restating questions, 100% preservation of code, IPs, hashes, CVEs, and paths*).
+- **At the Tool Level:** Integrated dense formatters compress tool responses down to telegraphic fragments or keyword-symbol one-liners before returning them to the LLM context.
 
 ---
 
 ## 📊 Token Conservation Benchmark
 
-Actual benchmark from live audit against an Apache/Ubuntu web server:
+The table below reflects real-world empirical benchmarks conducted against an Apache 2.4 / Ubuntu server running an ILS web application:
 
-| Output Mode | Payload Format | Token Count | Reduction | Best For |
+| Assessment Mode | Payload Description | Token Consumption | Context Reduction | Recommended Scenario |
 | :--- | :--- | :---: | :---: | :--- |
-| **Raw JSON (Disabled)** | Complete JSON tree | ~1,200 tokens | 0% | Machine debugging / API pipelines |
-| **Cave `FULL` (Default)** | Structured telegraphic summary | **~55 tokens** | **95.4%** | Fast agent analysis & daily coding |
-| **Cave `ULTRA`** | Single-line keyword/symbol string | **~17 tokens** | **98.6%** | High-frequency loops & rate limit saving |
+| **Raw JSON (`off`)** | Standard nested JSON schema | `~1,200` tokens | **0.0%** (Baseline) | API pipeline ingestion & debugging |
+| **Cave `LITE`** | Compact sentences, zero conversational filler | `~140` tokens | **88.3%** savings | Executive briefing / human review |
+| **Cave `FULL`** *(Default)* | Telegraphic technical fragments | **`~55` tokens** | **95.4%** savings | Day-to-day pair programming & security triage |
+| **Cave `ULTRA`** | High-density keyword & symbol shorthand (`->`, `|`) | **`~17` tokens** | **98.6%** savings | Autonomous agent loops & rate-limit conservation |
+
+```
+Standard Response : [████████████████████████████████████████] 1,200 tokens
+Caveman FULL      : [██] 55 tokens  (-95.4%)
+Caveman ULTRA     : [▏] 17 tokens  (-98.6%)
+```
 
 ---
 
-## 🛠️ MCP Tools Overview
+## 🛠️ Native MCP Tools Specification
 
-| Tool Name | Domain | Description |
+OmniSec provides **7 production-ready tools** compliant with the Model Context Protocol (v2024-11-05):
+
+| Tool Name | Security Domain | Description |
 | :--- | :---: | :--- |
-| `set_cave_mode` | **Optimization** | Switch reply and tool density level (`lite`, `full`, `ultra`, `off`). |
-| `purple_audit_triad` | **Purple Team** | Comprehensive triad audit: Red probes + Blue checks + overall posture scoring (0–100). |
-| `purple_emulate_threat` | **Red Team** | Emulates specific MITRE ATT&CK techniques (`T1595`, `T1190`, `T1110`, `T1083`) against target. |
-| `purple_validate_defense`| **Blue Team** | Evaluates HTTP Security Headers (CSP, HSTS, X-Frame) and produces instant `.htaccess` fix. |
-| `malware_inspect_pe` | **Malware Triage** | Static PE32/PE32+ analysis, Shannon entropy, packer detection (UPX, ASPack), and suspicious APIs. |
-| `forensics_audit_usb` | **Forensics** | Digital forensics triage for connected USB storage devices via Windows `USBSTOR` registry. |
-| `forensics_triage_logs` | **Forensics** | Rapid DFIR triage of Windows Event Logs (`Security`, `System`, `Application`) via `wevtutil`. |
+| [`set_cave_mode`](#set_cave_mode) | **Token Optimization** | Dynamically adjust response compression level (`ultra`, `full`, `lite`, `off`). |
+| [`purple_audit_triad`](#purple_audit_triad) | **Purple Team** | Comprehensive WAF & perimeter audit (Red probes + Blue headers + 0–100 posture scoring). |
+| [`purple_emulate_threat`](#purple_emulate_threat) | **Red Team** | Atomic simulation of MITRE ATT&CK techniques (`T1595`, `T1190`, `T1110`, `T1083`). |
+| [`purple_validate_defense`](#purple_validate_defense)| **Blue Team** | Passive HTTP security header audit (CSP, HSTS, X-Frame) with instant `.htaccess` fix generation. |
+| [`malware_inspect_pe`](#malware_inspect_pe) | **Malware Triage** | Static PE32/PE32+ analysis, Shannon entropy per-section, packer detection (UPX, ASPack), and API threat heuristics. |
+| [`forensics_audit_usb`](#forensics_audit_usb) | **DFIR Forensics** | Interrogates Windows `USBSTOR` registry to audit historical and active removable USB storage devices. |
+| [`forensics_triage_logs`](#forensics_triage_logs) | **DFIR Forensics** | Rapid Windows Event Log triage (`Security`, `System`, `Application`) via native `wevtutil` for incident response. |
 
 ---
 
-## 🚀 Quickstart
+## 💻 Dual-Runtime Architecture
 
-### 1. Check Platform Status
+OmniSec supports **zero external dependencies** across two native runtime engines:
+
+1. **PHP 8.5+ Runtime (`mcp/server.php`):**
+   - High performance, minimal memory footprint.
+   - Ideal for Windows servers and headless enterprise nodes.
+2. **Python 3.10+ Runtime (`mcp/server.py`):**
+   - Pure Python standard library (`struct`, `hashlib`, `urllib`, `subprocess`).
+   - Ideal for developers with standard Python environments.
+
+Both servers communicate through standard JSON-RPC 2.0 over `stdio`.
+
+---
+
+## 🚀 Multi-Client Quickstart
+
+### 1. Claude Desktop
+Add OmniSec to your Claude Desktop configuration (`%APPDATA%\Claude\claude_desktop_config.json` on Windows or `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+
+```json
+{
+  "mcpServers": {
+    "omnisec-agent": {
+      "command": "python",
+      "args": ["-u", "G:\\project\\ANTIGRAVIT PROJECT\\omnisec-agent-mcp\\mcp\\server.py"]
+    }
+  }
+}
+```
+*(Or use `php` with `"args": ["G:\\project\\ANTIGRAVIT PROJECT\\omnisec-agent-mcp\\mcp\\server.php"]`)*
+
+---
+
+### 2. Cursor & Windsurf IDE
+Create or update `.cursor/mcp.json` in your workspace:
+
+```json
+{
+  "mcpServers": {
+    "omnisec-agent": {
+      "command": "python",
+      "args": ["-u", "G:\\project\\ANTIGRAVIT PROJECT\\omnisec-agent-mcp\\mcp\\server.py"]
+    }
+  }
+}
+```
+
+---
+
+### 3. Google Antigravity
+Add to your Antigravity MCP configuration (`~/.gemini/antigravity/mcp_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "omnisec-agent": {
+      "command": "php",
+      "args": ["G:\\project\\ANTIGRAVIT PROJECT\\omnisec-agent-mcp\\mcp\\server.php"]
+    }
+  }
+}
+```
+
+---
+
+## 🧪 Live Verification & Real-World Demos
+
+### 🔬 1. Malware Static Analysis (`malware_inspect_pe`)
+Audit a Windows executable locally or remotely:
+
+```
+> malware_inspect_pe(file_path="C:\\Windows\\System32\\notepad.exe")
+
+[Output - Caveman FULL Mode]:
+File: notepad.exe (200,704 bytes)
+SHA256: da5807bb0997cc6b5132950ec87eda2b33b1ac4533cf1f7a22a6f3b576ed7c5b
+Arch: x64 (AMD64) | Format: PE32+ (64-bit) | Subsystem: Windows GUI
+Entropy: 6.3093 (Packer: None)
+Sections: .text (ent: 6.2747), .rdata (ent: 5.9296), .data (ent: 1.8068), .pdata (ent: 4.9442), .rsrc (ent: 4.6123)
+Suspicious Indicators: ShellExecute, IsDebuggerPresent
+Risk: MEDIUM
+```
+
+*(In **Ultra Mode**, this collapses to just 18 tokens: `PE: notepad.exe | x64 | ENTROPY: 6.3093 (Packer: None) | RISK: MEDIUM | SUSP: ShellExecute,IsDebuggerPresent`)*
+
+---
+
+### 🔍 2. Digital Forensics USB History (`forensics_audit_usb`)
+Interrogates `HKLM\SYSTEM\CurrentControlSet\Enum\USBSTOR` to reconstruct flash drive connections:
+
+```
+> forensics_audit_usb()
+
+[Output - Caveman FULL Mode]:
+USBSTOR History: 1 devices registered
+1. SSD 3.0 USB Device [Vendor: Unknown, Product: SSD]
+   Instance/Serial: 6339961022475678872&0
+   ContainerID: {306ff91b-e894-5d34-ab3f-b506994f7a57}
+```
+
+---
+
+### 🟣 3. Purple Team Triad Assessment (`purple_audit_triad`)
+Tests live perimeter defenses, dotfiles, git leaks, backup exposures, and HTTP security headers:
+
+```
+> purple_audit_triad(target_url="http://10.0.1.67")
+
+[Output - Caveman ULTRA Mode]:
+TARGET: http://10.0.1.67 | SCORE: 65/100 (MODERATE) | RED: 4/4 DEFENDED | MISSING: csp,x_frame,hsts,cookie_secure,BannerLeak
+```
+
+---
+
+## 🗺️ Multi-Platform Sync Engine (Bridge CLI)
+
+OmniSec includes a built-in synchronizer CLI (`bridge/skills_bridge.py`) that exports skills, rules, and configurations to all installed developer platforms:
+
 ```bash
+# 1. Inspect installed AI tools and environment status
 python bridge/skills_bridge.py status
-```
 
-### 2. Auto-Sync to Installed AI Clients
-```bash
-# Sync to Claude Desktop, Antigravity, and Cursor in one command:
+# 2. Synchronize MCP configs to Claude Desktop, Cursor, and Antigravity
 python bridge/skills_bridge.py sync --target all
-```
 
-### 3. Pack ZIPs for Claude Web (claude.ai)
-```bash
+# 3. Pack skill archives (.zip) for Claude.ai Project upload
 python bridge/skills_bridge.py pack
-# ZIP files will be generated in dist_packages/ ready to upload.
 ```
 
 ---
 
-## 🙏 Attribution, Source & Modification Notice
+## 🙏 Attribution & Prior Art
 
-* **[claude-skill-cave](https://github.com/asauntung/claude-skill-cave)**: Special thanks and full credit to **[@asauntung](https://github.com/asauntung)** for creating the original Caveman mode skill for Claude.  
-  * **Modification for OmniSec:** OmniSec adapts and expands this concept into a universal, multi-model ("Omni") token-saving engine. Modifications include model-agnostic prompt refactoring (supporting GPT-4o, Gemini, DeepSeek), universal negative constraints against model sycophancy, programmatic MCP density switches (`lite`/`full`/`ultra`), and multi-platform packaging via the OmniSec Bridge.
-* **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/)**: Open standard initiated by Anthropic.
-* **MITRE ATT&CK for Enterprise**: Threat emulation taxonomy and technique definitions.
+* **[claude-skill-cave](https://github.com/asauntung/claude-skill-cave):** Special thanks and full credit to **[@asauntung](https://github.com/asauntung)** for creating the original Caveman mode concept for Claude.  
+  * **OmniSec Enhancements:** OmniSec adapted and extended this methodology into a universal cross-model architecture (*Omni*). Modifications include model-agnostic prompting (calibrated for GPT-4o, Gemini 2.0, DeepSeek, and Claude 3.7), programmatic MCP density toggles (`lite` / `full` / `ultra`), dual-runtime tool execution (PHP & Python), and multi-platform synchronization via the OmniSec Bridge.
+* **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/):** Open industry standard created by Anthropic.
+* **[MITRE ATT&CK®](https://attack.mitre.org/):** Globally-accessible knowledge base of adversary tactics and techniques.
+* **[NIST SP 800-86](https://csrc.nist.gov/pubs/sp/800/86/final):** Guide to Integrating Forensic Techniques into Incident Response.
 
 ---
 
 ## 📄 License
 
-Distributed under the [MIT License](LICENSE).
+OmniSec Agent MCP is open-source software licensed under the [MIT License](LICENSE).
