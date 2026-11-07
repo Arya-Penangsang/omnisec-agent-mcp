@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "omnisec-local": {
+      "command": "php",
+      "args": [
+        "G:\\project\\ANTIGRAVIT PROJECT\\omnisec-agent-mcp\\mcp\\server.php"
+      ]
+    },
+    "omnisec-remote-office": {
+      "command": "ssh",
+      "args": [
+        "-o", "BatchMode=yes",
+        "-T", "kantor",
+        "C:\\php\\php.exe",
+        "C:\\Users\\Pengolahan\\mcp-servers\\purple-team\\server.php"
+      ]
+    }
+  }
+}
