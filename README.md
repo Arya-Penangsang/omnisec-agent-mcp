@@ -71,6 +71,9 @@ Actual benchmark from live audit against an Apache/Ubuntu web server:
 | `purple_audit_triad` | **Purple Team** | Comprehensive triad audit: Red probes + Blue checks + overall posture scoring (0–100). |
 | `purple_emulate_threat` | **Red Team** | Emulates specific MITRE ATT&CK techniques (`T1595`, `T1190`, `T1110`, `T1083`) against target. |
 | `purple_validate_defense`| **Blue Team** | Evaluates HTTP Security Headers (CSP, HSTS, X-Frame) and produces instant `.htaccess` fix. |
+| `malware_inspect_pe` | **Malware Triage** | Static PE32/PE32+ analysis, Shannon entropy, packer detection (UPX, ASPack), and suspicious APIs. |
+| `forensics_audit_usb` | **Forensics** | Digital forensics triage for connected USB storage devices via Windows `USBSTOR` registry. |
+| `forensics_triage_logs` | **Forensics** | Rapid DFIR triage of Windows Event Logs (`Security`, `System`, `Application`) via `wevtutil`. |
 
 ---
 

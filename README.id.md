@@ -41,6 +41,9 @@ Hasil uji coba nyata terhadap server web Apache/Ubuntu:
 | `purple_audit_triad` | **Purple Team** | Audit keamanan triad: simulasi Red probe + cek Blue perimeter + skor postur (0–100). |
 | `purple_emulate_threat` | **Red Team** | Simulasi teknik spesifik MITRE ATT&CK (`T1595`, `T1190`, `T1110`, `T1083`). |
 | `purple_validate_defense`| **Blue Team** | Evaluasi HTTP Security Headers (CSP, HSTS, X-Frame) dan menghasilkan konfigurasi `.htaccess`. |
+| `malware_inspect_pe` | **Malware Triage** | Analisis statis binary PE32/PE32+ (Windows EXE/DLL): Shannon entropy, deteksi packer (UPX, ASPack), suspicious APIs. |
+| `forensics_audit_usb` | **Forensik** | Triage forensik riwayat perangkat flashdisk/penyimpanan eksternal via Windows `USBSTOR` registry. |
+| `forensics_triage_logs` | **Forensik** | Ekstraksi dan triage cepat Windows Event Logs (`Security`, `System`, `Application`) via `wevtutil`. |
 
 ---
 
