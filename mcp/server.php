@@ -95,6 +95,13 @@ $mitreDb = array(
 // HELPER: HTTP PROBE VIA CURL
 // -----------------------------------------------------------------------------
 function sendHttpProbe($url, $method = 'GET', $headers = array(), $postData = null, $timeout = 6) {
+    if (!preg_match('/^https?:\/\//i', $url)) {
+        return array('code' => 0, 'headers' => array(), 'body' => '', 'error' => 'Blocked protocol: Only HTTP/HTTPS permitted (SSRF guard)');
+    }
+    if (preg_match('/169\.254\.169\.254|metadata\.google\.internal/i', $url)) {
+        return array('code' => 0, 'headers' => array(), 'body' => '', 'error' => 'Access to cloud instance metadata service is blocked (SSRF guard)');
+    }
+
     if (!function_exists('curl_init')) {
         return array('code' => 0, 'headers' => array(), 'body' => '', 'error' => 'cURL extension is not installed');
     }
@@ -601,11 +608,20 @@ function handleApplyFix($args) {
     $written = false;
     $message = "Generated $targetType hardening rules.";
     if (!empty($filePath)) {
-        if (file_exists($filePath)) {
-            @copy($filePath, $filePath . '.bak');
+        $real = realpath($filePath) ? realpath($filePath) : $filePath;
+        $base = strtolower(basename($filePath));
+        $allowed = array('.htaccess', 'nginx.conf', 'web.config');
+        $isSystem = (stripos($real, 'c:\\windows') === 0 || stripos($real, 'c:\\program files') === 0);
+
+        if (in_array($base, $allowed) && !$isSystem) {
+            if (file_exists($filePath)) {
+                @copy($filePath, $filePath . '.bak');
+            }
+            $written = @file_put_contents($filePath, $snippet, FILE_APPEND | LOCK_EX) !== false;
+            $message = $written ? "Hardening snippet appended to $filePath (backup created)." : "Failed to write to $filePath.";
+        } else {
+            $message = "Target file rejected by path security policy (only .htaccess, nginx.conf, web.config allowed).";
         }
-        $written = @file_put_contents($filePath, $snippet, FILE_APPEND | LOCK_EX) !== false;
-        $message = $written ? "Hardening snippet appended to $filePath (backup created)." : "Failed to write to $filePath.";
     }
 
     if ($currentCaveLevel === 'ultra') {
@@ -647,6 +663,9 @@ function handleMalwareInspectPe($args) {
     }
 
     $size = filesize($filePath);
+    if ($size > 100 * 1024 * 1024) {
+        return array('error' => 'File size exceeds 100MB limit for static triage.');
+    }
     $fp = fopen($filePath, 'rb');
     if (!$fp) {
         return array('error' => "Cannot open file: $filePath");

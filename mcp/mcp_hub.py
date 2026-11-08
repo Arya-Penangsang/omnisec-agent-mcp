@@ -21,6 +21,7 @@ import hashlib
 import subprocess
 import urllib.request
 import urllib.error
+import urllib.parse
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -225,6 +226,9 @@ def inspect_pe(file_path: str) -> dict:
         return {"error": f"File not found: {file_path}"}
 
     file_size = os.path.getsize(file_path)
+    if file_size > 100 * 1024 * 1024:
+        return {"error": f"File size exceeds 100MB limit for static triage ({file_size:,} bytes)."}
+
     try:
         with open(file_path, "rb") as f:
             dos_header = f.read(64)
@@ -340,10 +344,17 @@ def inspect_pe(file_path: str) -> dict:
             elif len(found_apis) > 0 or overall_entropy > 6.8:
                 risk = "MEDIUM"
 
+            h_sha = hashlib.sha256()
+            h_md5 = hashlib.md5()
             with open(file_path, "rb") as hf:
-                content = hf.read()
-                sha256 = hashlib.sha256(content).hexdigest()
-                md5 = hashlib.md5(content).hexdigest()
+                while True:
+                    chunk_hash = hf.read(65536)
+                    if not chunk_hash:
+                        break
+                    h_sha.update(chunk_hash)
+                    h_md5.update(chunk_hash)
+            sha256 = h_sha.hexdigest()
+            md5 = h_md5.hexdigest()
 
             return {
                 "file_name": os.path.basename(file_path),
@@ -441,27 +452,33 @@ def query_event_logs(category: str = "logon", count: int = 5) -> list:
     if sys.platform != "win32":
         return [{"error": "Windows Event Log triage requires a Windows host with wevtutil."}]
 
-    log_name = "Security"
-    query = ""
-    if category == "logon":
-        log_name = "Security"
-        query = " /q:\"*[System[(EventID=4624 or EventID=4625)]]\""
-    elif category == "service":
-        log_name = "System"
-        query = " /q:\"*[System[(EventID=7045 or EventID=7040)]]\""
-    elif category == "audit_tamper":
-        log_name = "Security"
-        query = " /q:\"*[System[(EventID=1102)]]\""
-    elif category == "system":
-        log_name = "System"
-    elif category == "security":
-        log_name = "Security"
-    elif category == "application":
-        log_name = "Application"
-
-    cmd = f"wevtutil qe {log_name}{query} /c:{count} /rd:true /f:text"
     try:
-        res = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=12)
+        count = max(1, min(50, int(count)))
+    except (ValueError, TypeError):
+        count = 5
+
+    valid_categories = {
+        "logon": ("Security", "*[System[(EventID=4624 or EventID=4625)]]"),
+        "service": ("System", "*[System[(EventID=7045 or EventID=7040)]]"),
+        "audit_tamper": ("Security", "*[System[(EventID=1102)]]"),
+        "system": ("System", None),
+        "security": ("Security", None),
+        "application": ("Application", None),
+    }
+
+    cat_key = str(category).lower().strip()
+    if cat_key not in valid_categories:
+        cat_key = "logon"
+
+    log_name, query_filter = valid_categories[cat_key]
+
+    cmd_args = ["wevtutil", "qe", log_name]
+    if query_filter:
+        cmd_args.append(f"/q:{query_filter}")
+    cmd_args.extend([f"/c:{count}", "/rd:true", "/f:text"])
+
+    try:
+        res = subprocess.run(cmd_args, shell=False, capture_output=True, text=True, timeout=12)
         output = res.stdout
     except Exception as e:
         return [{"error": str(e)}]
@@ -491,6 +508,15 @@ def query_event_logs(category: str = "logon", count: int = 5) -> list:
 
 
 def send_http_probe(url: str, method="GET", headers=None, post_data=None, timeout=6):
+    parsed = urllib.parse.urlparse(url)
+    scheme = parsed.scheme.lower()
+    if scheme not in ("http", "https"):
+        return {"code": 0, "headers": {}, "body": "", "error": f"Blocked protocol '{scheme}': Only HTTP/HTTPS permitted (SSRF guard)."}
+
+    hostname = (parsed.hostname or "").lower()
+    if hostname in ("169.254.169.254", "metadata.google.internal"):
+        return {"code": 0, "headers": {}, "body": "", "error": "Access to cloud instance metadata service is blocked (SSRF guard)."}
+
     req_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) OmniSecHub/3.0"}
     if headers:
         req_headers.update(headers)
@@ -918,12 +944,16 @@ def main():
                     rules = "Header always set X-Content-Type-Options \"nosniff\"\nHeader always set X-Frame-Options \"SAMEORIGIN\"\nHeader always set Content-Security-Policy \"default-src 'self';\"\nServerSignature Off"
                 written = False
                 if f_path:
-                    try:
-                        with open(f_path, "a", encoding="utf-8") as f:
-                            f.write("\n" + rules + "\n")
-                        written = True
-                    except Exception:
-                        pass
+                    norm_path = Path(f_path).resolve()
+                    allowed_names = (".htaccess", "nginx.conf", "web.config")
+                    is_system_path = str(norm_path).lower().startswith("c:\\windows") or str(norm_path).lower().startswith("c:\\program files")
+                    if norm_path.name.lower() in allowed_names and not is_system_path:
+                        try:
+                            with open(norm_path, "a", encoding="utf-8") as f:
+                                f.write("\n" + rules + "\n")
+                            written = True
+                        except Exception:
+                            pass
                 if CURRENT_CAVE_LEVEL == "ultra":
                     result_text = f"FIX: {t_type} -> {'WRITTEN' if written else 'SNIPPET_READY'}"
                 else:

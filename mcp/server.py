@@ -15,6 +15,7 @@ import hashlib
 import subprocess
 import urllib.request
 import urllib.error
+import urllib.parse
 from collections import Counter
 from datetime import datetime
 
@@ -49,6 +50,15 @@ def calculate_entropy(data: bytes) -> float:
 
 
 def send_http_probe(url: str, method="GET", headers=None, post_data=None, timeout=6):
+    parsed = urllib.parse.urlparse(url)
+    scheme = parsed.scheme.lower()
+    if scheme not in ("http", "https"):
+        return {"code": 0, "headers": {}, "body": "", "error": f"Blocked protocol '{scheme}': Only HTTP/HTTPS permitted (SSRF guard)."}
+
+    hostname = (parsed.hostname or "").lower()
+    if hostname in ("169.254.169.254", "metadata.google.internal"):
+        return {"code": 0, "headers": {}, "body": "", "error": "Access to cloud instance metadata service is blocked (SSRF guard)."}
+
     req_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) OmniSecAgentMCP-Py/2.0"}
     if headers:
         req_headers.update(headers)
@@ -76,6 +86,9 @@ def inspect_pe(file_path: str):
         return {"error": f"File not found: {file_path}"}
 
     file_size = os.path.getsize(file_path)
+    if file_size > 100 * 1024 * 1024:
+        return {"error": f"File size exceeds 100MB limit for static triage ({file_size:,} bytes)."}
+
     try:
         with open(file_path, "rb") as f:
             dos_header = f.read(64)
@@ -192,10 +205,17 @@ def inspect_pe(file_path: str):
             elif len(found_apis) > 0 or overall_entropy > 6.8:
                 risk = "MEDIUM"
 
+            h_sha = hashlib.sha256()
+            h_md5 = hashlib.md5()
             with open(file_path, "rb") as hf:
-                content = hf.read()
-                sha256 = hashlib.sha256(content).hexdigest()
-                md5 = hashlib.md5(content).hexdigest()
+                while True:
+                    chunk_hash = hf.read(65536)
+                    if not chunk_hash:
+                        break
+                    h_sha.update(chunk_hash)
+                    h_md5.update(chunk_hash)
+            sha256 = h_sha.hexdigest()
+            md5 = h_md5.hexdigest()
 
             return {
                 "file_name": os.path.basename(file_path),

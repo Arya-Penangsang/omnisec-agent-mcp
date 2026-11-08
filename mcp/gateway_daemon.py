@@ -49,7 +49,12 @@ class McpSseHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def _send_cors_headers(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self.headers.get("Origin", "")
+        # Safe origin validation: allow localhost/loopback or LAN, restrict arbitrary external origins
+        if origin and any(h in origin for h in ("localhost", "127.0.0.1", "100.93.")):
+            self.send_header("Access-Control-Allow-Origin", origin)
+        else:
+            self.send_header("Access-Control-Allow-Origin", "http://127.0.0.1:8765")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
