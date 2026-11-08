@@ -1,0 +1,9 @@
+# Smithery MCP Registry Configuration
+# Specification: https://smithery.ai/docs/config#syntax
+startCommand:
+  type: stdio
+  config:
+    command: python
+    args:
+      - -u
+      - mcp/mcp_hub.py

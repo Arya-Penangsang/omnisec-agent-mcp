@@ -33,8 +33,16 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
         pass
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR))
 SKILLS_DIR = BASE_DIR / "skills"
 DIST_DIR = BASE_DIR / "dist_packages"
+
+try:
+    from mcp import visual_report
+    from mesh import mesh_manager
+except ImportError:
+    visual_report = None
+    mesh_manager = None
 
 # Global Hub State
 CURRENT_CAVE_LEVEL = "full"  # "lite" | "full" | "ultra" | "off"
@@ -762,6 +770,32 @@ TOOLS = [
         "name": "gateway_status",
         "description": "Display OmniSec Universal Gateway Hub status, loaded skills, backend mode, and token savings.",
         "inputSchema": {"type": "object", "properties": {}}
+    },
+    {
+        "name": "purple_apply_fix",
+        "description": "Generate or write 1-click WAF hardening configuration rules (.htaccess / Nginx / IIS).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "target_type": {"type": "string", "enum": ["apache", "nginx", "iis"], "description": "Web server type (default: apache)"},
+                "file_path": {"type": "string", "description": "Optional file path to write rules directly (e.g. .htaccess)"}
+            }
+        }
+    },
+    {
+        "name": "generate_visual_report",
+        "description": "Generate an interactive, standalone HTML security assessment dashboard with SVG gauge and heatmap.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "target_url": {"type": "string", "description": "Target base URL"}
+            }
+        }
+    },
+    {
+        "name": "mesh_audit_network",
+        "description": "Orchestrate multi-node security posture audit across enterprise mesh targets.",
+        "inputSchema": {"type": "object", "properties": {}}
     }
 ]
 
@@ -873,6 +907,42 @@ def main():
                 else:
                     log_res = query_event_logs(category=cat, count=cnt)
                     result_text = format_logs(log_res, cat, CURRENT_CAVE_LEVEL)
+            elif tool_name == "purple_apply_fix":
+                t_type = tool_args.get("target_type", "apache").lower()
+                f_path = tool_args.get("file_path", "")
+                if t_type == "nginx":
+                    rules = "add_header X-Content-Type-Options \"nosniff\" always;\nadd_header X-Frame-Options \"SAMEORIGIN\" always;\nadd_header Content-Security-Policy \"default-src 'self';\" always;"
+                elif t_type == "iis":
+                    rules = "<customHeaders>\n  <add name=\"X-Content-Type-Options\" value=\"nosniff\" />\n  <add name=\"X-Frame-Options\" value=\"SAMEORIGIN\" />\n</customHeaders>"
+                else:
+                    rules = "Header always set X-Content-Type-Options \"nosniff\"\nHeader always set X-Frame-Options \"SAMEORIGIN\"\nHeader always set Content-Security-Policy \"default-src 'self';\"\nServerSignature Off"
+                written = False
+                if f_path:
+                    try:
+                        with open(f_path, "a", encoding="utf-8") as f:
+                            f.write("\n" + rules + "\n")
+                        written = True
+                    except Exception:
+                        pass
+                if CURRENT_CAVE_LEVEL == "ultra":
+                    result_text = f"FIX: {t_type} -> {'WRITTEN' if written else 'SNIPPET_READY'}"
+                else:
+                    result_text = f"Remediation ({t_type}):\nStatus: {'Written to ' + f_path if written else 'Ready'}\n\n{rules}"
+            elif tool_name == "generate_visual_report":
+                t_url = tool_args.get("target_url", "http://10.0.1.67")
+                if visual_report:
+                    r_path = visual_report.save_report_to_disk(target_url=t_url)
+                    if CURRENT_CAVE_LEVEL == "ultra":
+                        result_text = f"REPORT: {r_path.name} ({r_path})"
+                    else:
+                        result_text = f"Visual Security Dashboard Generated:\nPath: {r_path}\nTarget: {t_url}\nOpen in browser to view SVG gauge & heatmap."
+                else:
+                    result_text = "Visual reporting module not loaded."
+            elif tool_name == "mesh_audit_network":
+                if mesh_manager:
+                    result_text = mesh_manager.audit_mesh(CURRENT_CAVE_LEVEL)
+                else:
+                    result_text = "Mesh manager module not loaded."
             else:
                 result_text = f"Tool '{tool_name}' unknown."
 

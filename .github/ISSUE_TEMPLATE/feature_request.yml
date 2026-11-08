@@ -1,0 +1,21 @@
+name: Feature Request
+description: Suggest a new security tool, MITRE technique, or platform bridge
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: "Have an idea to make OmniSec better? Let us know below!"
+  - type: input
+    id: feature_title
+    attributes:
+      label: Feature Summary
+      placeholder: "e.g., Add Prefetch file parsing to digital forensics"
+    validations:
+      required: true
+  - type: textarea
+    id: feature_details
+    attributes:
+      label: Detailed Description & Use Case
+      description: Why is this needed and how should it behave?
+    validations:
+      required: true

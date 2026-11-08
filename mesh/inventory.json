@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "mesh_name": "OmniSec Enterprise Security Mesh",
+  "nodes": [
+    {
+      "id": "inlis_core",
+      "name": "Inlis Library Core Server",
+      "url": "http://10.0.1.67",
+      "type": "web_application",
+      "environment": "intranet",
+      "gateway": "office_pc",
+      "criticality": "HIGH"
+    },
+    {
+      "id": "office_pc",
+      "name": "Preservasi BPMN Gateway Host",
+      "host": "100.93.234.124",
+      "type": "windows_gateway",
+      "environment": "tailscale_vpn",
+      "ssh_alias": "kantor",
+      "criticality": "MEDIUM"
+    },
+    {
+      "id": "local_dev",
+      "name": "Local Development Server",
+      "url": "http://localhost:8080",
+      "type": "web_application",
+      "environment": "localhost",
+      "gateway": "direct",
+      "criticality": "LOW"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+name: OmniSec CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test MCP Engines & Bridge (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11"]
+        php-version: ["8.2", "8.3"]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: curl, json, mbstring
+
+      - name: Verify Bridge CLI & Packaging
+        run: |
+          python bridge/skills_bridge.py status
+          python bridge/skills_bridge.py pack
+          python bridge/skills_bridge.py export --target all
+
+      - name: Run MCP Server Initialization Tests
+        run: |
+          python -u -c "import subprocess, json; p = subprocess.Popen(['python', '-u', 'mcp/server.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True); p.stdin.write(json.dumps({'jsonrpc':'2.0','id':1,'method':'initialize','params':{}}) + '\n'); p.stdin.flush(); res = json.loads(p.stdout.readline()); print('Initialized:', res['result']['serverInfo']); p.terminate()"
+
+      - name: Upload Skill Artifacts
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
+        uses: actions/upload-artifact@v4
+        with:
+          name: omnisec-skill-packages
+          path: dist_packages/*.zip

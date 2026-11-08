@@ -562,6 +562,68 @@ function handleValidateDefense($args) {
     );
 }
 
+function handleApplyFix($args) {
+    global $currentCaveLevel;
+    $targetType = isset($args['target_type']) ? strtolower(trim($args['target_type'])) : 'apache';
+    $filePath = isset($args['file_path']) ? trim($args['file_path']) : '';
+
+    if ($targetType === 'nginx') {
+        $snippet = "# OmniSec Nginx Hardening Configuration\n" .
+            "add_header X-Content-Type-Options \"nosniff\" always;\n" .
+            "add_header X-Frame-Options \"SAMEORIGIN\" always;\n" .
+            "add_header Referrer-Policy \"strict-origin-when-cross-origin\" always;\n" .
+            "add_header Content-Security-Policy \"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';\" always;\n" .
+            "add_header Strict-Transport-Security \"max-age=31536000; includeSubDomains\" always;\n" .
+            "server_tokens off;\n" .
+            "location ~ /\\.(env|git|htaccess|htpasswd|ini|log|conf|bak|sql) {\n    deny all;\n    return 404;\n}\n";
+    } elseif ($targetType === 'iis') {
+        $snippet = "<!-- OmniSec IIS web.config Hardening -->\n" .
+            "<configuration>\n  <system.webServer>\n    <httpProtocol>\n      <customHeaders>\n" .
+            "        <add name=\"X-Content-Type-Options\" value=\"nosniff\" />\n" .
+            "        <add name=\"X-Frame-Options\" value=\"SAMEORIGIN\" />\n" .
+            "        <add name=\"Content-Security-Policy\" value=\"default-src 'self';\" />\n" .
+            "      </customHeaders>\n    </httpProtocol>\n  </system.webServer>\n</configuration>\n";
+    } else {
+        $targetType = 'apache';
+        $snippet = "# OmniSec Apache .htaccess Hardening Rules\n" .
+            "<IfModule mod_headers.c>\n" .
+            "    Header always set X-Content-Type-Options \"nosniff\"\n" .
+            "    Header always set X-Frame-Options \"SAMEORIGIN\"\n" .
+            "    Header always set Referrer-Policy \"strict-origin-when-cross-origin\"\n" .
+            "    Header always set Content-Security-Policy \"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';\"\n" .
+            "    Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains\"\n" .
+            "</IfModule>\n" .
+            "ServerSignature Off\n" .
+            "<FilesMatch \"^\\.(env|git|htaccess|htpasswd|ini|log|conf|bak|sql)\">\n" .
+            "    Order allow,deny\n    Deny from all\n</FilesMatch>\n";
+    }
+
+    $written = false;
+    $message = "Generated $targetType hardening rules.";
+    if (!empty($filePath)) {
+        if (file_exists($filePath)) {
+            @copy($filePath, $filePath . '.bak');
+        }
+        $written = @file_put_contents($filePath, $snippet, FILE_APPEND | LOCK_EX) !== false;
+        $message = $written ? "Hardening snippet appended to $filePath (backup created)." : "Failed to write to $filePath.";
+    }
+
+    if ($currentCaveLevel === 'ultra') {
+        return "FIX: {$targetType} -> " . ($written ? "WRITTEN ({$filePath})" : "SNIPPET_READY");
+    }
+    if ($currentCaveLevel === 'full') {
+        return "Remediation ($targetType):\n$message\nRules:\n$snippet";
+    }
+
+    return array(
+        'target_type' => $targetType,
+        'written' => $written,
+        'file_path' => $filePath,
+        'snippet' => $snippet,
+        'status' => $message
+    );
+}
+
 // -----------------------------------------------------------------------------
 // TOOL HANDLER: MALWARE INSPECT PE
 // -----------------------------------------------------------------------------
@@ -1039,6 +1101,24 @@ $tools = array(
             ),
             'required' => array('category')
         )
+    ),
+    array(
+        'name' => 'purple_apply_fix',
+        'description' => 'Terapkan atau dapatkan snippet kode pengerasan WAF/Server 1-klik (.htaccess / Nginx / IIS) untuk mengamankan host target.',
+        'inputSchema' => array(
+            'type' => 'object',
+            'properties' => array(
+                'target_type' => array(
+                    'type' => 'string',
+                    'enum' => array('apache', 'nginx', 'iis'),
+                    'description' => 'Jenis web server (default: apache)'
+                ),
+                'file_path' => array(
+                    'type' => 'string',
+                    'description' => 'Path file tujuan untuk langsung menulis aturan (opsional, misal: .htaccess)'
+                )
+            )
+        )
     )
 );
 
@@ -1191,6 +1271,8 @@ while ($line = fgets($stdin)) {
             $toolResult = handleForensicsAuditUsb($arguments);
         } elseif ($name === 'forensics_triage_logs') {
             $toolResult = handleForensicsTriageLogs($arguments);
+        } elseif ($name === 'purple_apply_fix') {
+            $toolResult = handleApplyFix($arguments);
         } else {
             $toolResult = array('error' => 'Unknown tool: ' . $name);
         }

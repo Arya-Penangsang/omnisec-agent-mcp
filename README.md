@@ -76,7 +76,7 @@ Caveman ULTRA     : [▏] 17 tokens  (-98.6%)
 
 ## 🛠️ Native MCP Tools Specification
 
-OmniSec provides **7 production-ready tools** compliant with the Model Context Protocol (v2024-11-05):
+OmniSec provides **10 production-ready tools** compliant with the Model Context Protocol (v2024-11-05):
 
 | Tool Name | Security Domain | Description |
 | :--- | :---: | :--- |
@@ -84,9 +84,12 @@ OmniSec provides **7 production-ready tools** compliant with the Model Context P
 | [`purple_audit_triad`](#purple_audit_triad) | **Purple Team** | Comprehensive WAF & perimeter audit (Red probes + Blue headers + 0–100 posture scoring). |
 | [`purple_emulate_threat`](#purple_emulate_threat) | **Red Team** | Atomic simulation of MITRE ATT&CK techniques (`T1595`, `T1190`, `T1110`, `T1083`). |
 | [`purple_validate_defense`](#purple_validate_defense)| **Blue Team** | Passive HTTP security header audit (CSP, HSTS, X-Frame) with instant `.htaccess` fix generation. |
+| [`purple_apply_fix`](#purple_apply_fix) | **Blue Team** | 1-Click WAF hardening rule generator & writer for Apache, Nginx, or IIS web servers. |
 | [`malware_inspect_pe`](#malware_inspect_pe) | **Malware Triage** | Static PE32/PE32+ analysis, Shannon entropy per-section, packer detection (UPX, ASPack), and API threat heuristics. |
 | [`forensics_audit_usb`](#forensics_audit_usb) | **DFIR Forensics** | Interrogates Windows `USBSTOR` registry to audit historical and active removable USB storage devices. |
 | [`forensics_triage_logs`](#forensics_triage_logs) | **DFIR Forensics** | Rapid Windows Event Log triage (`Security`, `System`, `Application`) via native `wevtutil` for incident response. |
+| [`generate_visual_report`](#generate_visual_report) | **Generative UI** | Generates an interactive, standalone HTML security dashboard with SVG gauge and heatmap. |
+| [`mesh_audit_network`](#mesh_audit_network) | **Mesh Orchestrator** | Coordinates multi-node security posture audit across enterprise mesh targets. |
 
 ---
 

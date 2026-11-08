@@ -164,8 +164,41 @@ def run_mcp_hub_test():
         print(f"    [+] Remote USB Result: {remote_text}")
         assert "SSD" in remote_text or "USBSTOR" in remote_text or "devices" in remote_text
 
+        # 7. Testing 1-Click Remediation (purple_apply_fix) - Phase 1 Final
+        print("[*] 7. Testing 1-Click Remediation (purple_apply_fix)...")
+        fix_call = send_recv({
+            "jsonrpc": "2.0",
+            "method": "tools/call",
+            "params": {"name": "purple_apply_fix", "arguments": {"target_type": "apache"}}
+        })
+        fix_text = fix_call["result"]["content"][0]["text"]
+        print(f"    [+] Fix Result: {fix_text}")
+        assert "FIX:" in fix_text or "Remediation" in fix_text
+
+        # 8. Testing Visual Reporting (generate_visual_report) - Phase 3 Final
+        print("[*] 8. Testing Generative UI (generate_visual_report)...")
+        report_call = send_recv({
+            "jsonrpc": "2.0",
+            "method": "tools/call",
+            "params": {"name": "generate_visual_report", "arguments": {"target_url": "http://10.0.1.67"}}
+        })
+        report_text = report_call["result"]["content"][0]["text"]
+        print(f"    [+] Visual Report: {report_text}")
+        assert "REPORT:" in report_text or "Visual Security" in report_text
+
+        # 9. Testing Multi-Host Mesh Audit (mesh_audit_network) - Phase 4 Final
+        print("[*] 9. Testing Multi-Host Mesh Audit (mesh_audit_network)...")
+        mesh_call = send_recv({
+            "jsonrpc": "2.0",
+            "method": "tools/call",
+            "params": {"name": "mesh_audit_network", "arguments": {}}
+        })
+        mesh_text = mesh_call["result"]["content"][0]["text"]
+        print(f"    [+] Mesh Result: {mesh_text}")
+        assert "MESH" in mesh_text or "inlis" in mesh_text.lower()
+
         print("\n" + "=" * 65)
-        print(" [ALL E2E STAGES PASSED] OMNISEC AGENT MCP PHASE 2 & 3 CERTIFIED!")
+        print(" [ALL E2E STAGES PASSED] OMNISEC AGENT MCP PHASE 1, 2, 3, 4 CERTIFIED!")
         print("=" * 65)
 
     finally:

@@ -1,0 +1,28 @@
+name: Bug Report
+description: Report an issue or unexpected behavior in OmniSec Agent MCP
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for reporting an issue! Please provide as much detail as possible."
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, PHP version, and AI client (Claude Desktop, Cursor, Antigravity)
+      placeholder: "e.g., Windows 10, Python 3.10, Claude Desktop v0.7"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Output / Logs
+      description: Paste any error messages or stack traces.
+      render: shell

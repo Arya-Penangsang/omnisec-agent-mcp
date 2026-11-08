@@ -68,9 +68,9 @@ Tabel berikut menunjukkan hasil pengujian nyata terhadap server web Apache 2.4 /
 
 ---
 
-## 🛠️ Spesifikasi 7 Native Tools MCP
+## 🛠️ Spesifikasi 10 Native Tools MCP
 
-OmniSec menyediakan **7 tools native** siap pakai yang mematuhi spesifikasi Model Context Protocol (v2024-11-05):
+OmniSec menyediakan **10 tools native** siap pakai yang mematuhi spesifikasi Model Context Protocol (v2024-11-05):
 
 | Nama Tool | Domain Keamanan | Deskripsi |
 | :--- | :---: | :--- |
@@ -78,9 +78,12 @@ OmniSec menyediakan **7 tools native** siap pakai yang mematuhi spesifikasi Mode
 | [`purple_audit_triad`](#purple_audit_triad) | **Purple Team** | Audit terpadu WAF & perimeter (Simulasi Red + cek Blue header + skor postur 0–100). |
 | [`purple_emulate_threat`](#purple_emulate_threat) | **Red Team** | Simulasi taktik serangan spesifik MITRE ATT&CK (`T1595`, `T1190`, `T1110`, `T1083`). |
 | [`purple_validate_defense`](#purple_validate_defense)| **Blue Team** | Audit pasif HTTP Security Headers (CSP, HSTS, X-Frame) dan menghasilkan konfigurasi `.htaccess`. |
+| [`purple_apply_fix`](#purple_apply_fix) | **Blue Team** | Generator & penulis kode pengerasan WAF 1-klik untuk server Apache, Nginx, dan IIS. |
 | [`malware_inspect_pe`](#malware_inspect_pe) | **Malware Triage** | Analisis statis binary PE32/PE32+ (EXE/DLL): Shannon entropy per-seksi, deteksi packer (UPX, ASPack), dan API berbahaya. |
 | [`forensics_audit_usb`](#forensics_audit_usb) | **Forensik DFIR** | Mengaudit riwayat flashdisk/perangkat penyimpanan eksternal yang terpasang melalui registri Windows `USBSTOR`. |
 | [`forensics_triage_logs`](#forensics_triage_logs) | **Forensik DFIR** | Triage cepat Windows Event Log (`Security`, `System`, `Application`) via native `wevtutil` untuk tanggap insiden. |
+| [`generate_visual_report`](#generate_visual_report) | **Generative UI** | Menghasilkan dashboard laporan keamanan HTML interaktif dengan SVG gauge meter dan heatmap MITRE. |
+| [`mesh_audit_network`](#mesh_audit_network) | **Orkestrator Mesh** | Mengkoordinasikan audit postur keamanan lintas node/host dalam jaringan enterprise mesh. |
 
 ---
 
