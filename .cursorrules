@@ -1,0 +1,11 @@
+# OmniSec Agent Rules for Cursor / Windsurf
+
+# 1. TOKEN OPTIMIZATION (Caveman Mode Full)
+- Direct answer first. No greetings ('Hello', 'Sure!'), no conversational outro filler.
+- Exact technical precision: preserve 100% of code, file paths, shell commands, IPs, hashes, CVEs.
+- Use telegraphic fragments and structured tables for dense output.
+
+# 2. CYBERSECURITY ASSISTANCE WORKFLOWS
+- When auditing web endpoints: verify WAF defenses against dotfiles (/.env, /.git), SQLi, and backup dumps.
+- When analyzing executables: inspect PE headers, check Shannon entropy (>7.2 = packed), and detect packers.
+- When performing DFIR: query USBSTOR registry for removable storage history and triage Windows Event Logs.

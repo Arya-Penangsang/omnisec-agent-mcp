@@ -84,9 +84,9 @@ OmniSec menyediakan **7 tools native** siap pakai yang mematuhi spesifikasi Mode
 
 ---
 
-## 💻 Arsitektur Dual-Runtime (PHP & Python)
+## 💻 Arsitektur Dual-Runtime & Gateway Hub
 
-OmniSec dibangun dengan **prinsip zero-dependency** pada dua runtime native:
+OmniSec dibangun dengan **prinsip zero-dependency** pada tiga modul server:
 
 1. **Engine PHP 8.5+ (`mcp/server.php`):**
    - Performa tinggi, konsumsi memori sangat hemat.
@@ -94,8 +94,13 @@ OmniSec dibangun dengan **prinsip zero-dependency** pada dua runtime native:
 2. **Engine Python 3.10+ (`mcp/server.py`):**
    - Menggunakan modul standar Python murni (`struct`, `hashlib`, `urllib`, `subprocess`).
    - Ideal untuk lingkungan pengembang umum (Claude Desktop, Cursor).
+3. **Universal Gateway Hub (`mcp/mcp_hub.py`):**
+   - Router multi-MCP cerdas (v3.0.0).
+   - Menemukan dan menyajikan dokumen runbook markdown secara dinamis sebagai MCP Resources (`resource://skills/*`).
+   - Menyediakan template prompt sistem terstandarisasi (`prompts/list`).
+   - Kemampuan orkestrasi hibrida: secara transparan meneruskan perintah audit WAF atau forensik ke host kantor via SSH tunneling sambil mengeksekusi tool lokal secara simultan.
 
-Kedua server berkomunikasi menggunakan standar JSON-RPC 2.0 melalui `stdio`.
+Semua server berkomunikasi menggunakan standar JSON-RPC 2.0 melalui `stdio`.
 
 ---
 
@@ -208,6 +213,26 @@ python bridge/skills_bridge.py sync --target all
 
 # 3. Kemas arsip ZIP untuk diunggah ke claude.ai Projects
 python bridge/skills_bridge.py pack
+
+# 4. Ekspor Prompt Pack untuk ChatGPT / Proyek Web dan berkas .cursorrules
+python bridge/skills_bridge.py export --target all
+```
+
+---
+
+## 🧪 Uji Coba Otomatis End-to-End (E2E Test)
+
+Jalankan rangkaian pengujian otomatis end-to-end untuk memverifikasi Bridge CLI, dynamic MCP resources, prompts, tool lokal, dan proxy hybrid remote SSH:
+
+```bash
+python mcp/test_e2e.py
+```
+
+Output yang diharapkan:
+```
+=================================================================
+ [ALL E2E STAGES PASSED] OMNISEC AGENT MCP PHASE 2 & 3 CERTIFIED!
+=================================================================
 ```
 
 ---

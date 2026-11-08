@@ -100,8 +100,13 @@ OmniSec supports **zero external dependencies** across two native runtime engine
 2. **Python 3.10+ Runtime (`mcp/server.py`):**
    - Pure Python standard library (`struct`, `hashlib`, `urllib`, `subprocess`).
    - Ideal for developers with standard Python environments.
+3. **Universal Gateway Hub (`mcp/mcp_hub.py`):**
+   - Advanced multi-MCP orchestrator (v3.0.0).
+   - Dynamically discovers and serves live Markdown runbooks as MCP Resources (`resource://skills/*`).
+   - Exposes pre-configured MCP Prompts (`cave_mode`, `purple_triad_audit`, `malware_triage`).
+   - Built-in hybrid orchestration: seamlessly proxies specific tool calls over SSH to remote enterprise nodes while handling local tools natively.
 
-Both servers communicate through standard JSON-RPC 2.0 over `stdio`.
+All servers communicate through standard JSON-RPC 2.0 over `stdio`.
 
 ---
 
@@ -218,6 +223,26 @@ python bridge/skills_bridge.py sync --target all
 
 # 3. Pack skill archives (.zip) for Claude.ai Project upload
 python bridge/skills_bridge.py pack
+
+# 4. Export Prompt Pack for ChatGPT / Claude Projects and .cursorrules
+python bridge/skills_bridge.py export --target all
+```
+
+---
+
+## 🧪 Automated End-to-End Test Suite
+
+Run the comprehensive test suite to certify all Bridge features, dynamic MCP resources, prompts, local tools, and remote SSH hybrid orchestration:
+
+```bash
+python mcp/test_e2e.py
+```
+
+Expected output:
+```
+=================================================================
+ [ALL E2E STAGES PASSED] OMNISEC AGENT MCP PHASE 2 & 3 CERTIFIED!
+=================================================================
 ```
 
 ---
