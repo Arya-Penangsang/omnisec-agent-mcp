@@ -1,0 +1,64 @@
+name: Publish GitHub Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Generate Fresh Distribution Packages
+        run: |
+          python bridge/skills_bridge.py pack
+          python bridge/skills_bridge.py export --target all
+
+      - name: Publish Official GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "OmniSec Agent MCP ${{ github.ref_name }} — Universal Cyber & Caveman Hub"
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            # 🛡️ OmniSec Agent MCP — Release ${{ github.ref_name }}
+
+            OmniSec Agent Model Context Protocol (MCP) Server: Universal Multi-Engine Architecture for AI-Assisted Cybersecurity & Token Optimization.
+
+            ### 🚀 Core Highlights
+            - **Universal Dual Runtime**: Zero-dependency Python 3 standard library (`mcp/server.py`) and PHP 8.x standard library (`mcp/server.php`).
+            - **Caveman Token Optimizer**: Cut context bloat up to 98% with 4 compression tiers (`lite`, `full`, `ultra`, `off`).
+            - **Web Purple Teaming**: Threat emulation (MITRE ATT&CK T1595, T1190, T1110, T1083), HTTP header auditing, and 1-click remediation.
+            - **Malware Triage**: PE32/PE32+ static triage, Shannon entropy calculation, packer signature detection, and suspicious API hunting.
+            - **Digital Forensics**: USBSTOR registry forensics and Windows Event Log triage (`wevtutil`).
+            - **Cloud Gateway & Transport**: Streamable HTTP / Server-Sent Events (SSE) daemon (`mcp/gateway_daemon.py`).
+            - **Enterprise Mesh Manager**: Multi-host orchestration and node posture monitoring.
+            - **Interactive Visual Reporting**: Generative UI HTML dashboards with SVG gauge meters.
+
+            ### 📦 Distribution Packages Attached
+            - `omnisec_all_skills.zip`: All 4 cyber skills bundled for Antigravity, Claude, Cursor.
+            - `cave.zip`: Standalone Caveman Token Optimizer skill.
+            - `digital-forensics.zip`: Standalone Digital Forensics (DFIR) skill.
+            - `malware-triage.zip`: Standalone Malware Triage PE analysis skill.
+            - `purple-team.zip`: Standalone Purple Teaming security skill.
+            - `omnisec_chatgpt_prompt_pack.md`: Universal prompt pack for ChatGPT & web AI models.
+            - `omnisec_security_report.html`: Standalone interactive security report.
+          files: |
+            dist_packages/*.zip
+            dist_packages/*.md
+            dist_packages/*.html
